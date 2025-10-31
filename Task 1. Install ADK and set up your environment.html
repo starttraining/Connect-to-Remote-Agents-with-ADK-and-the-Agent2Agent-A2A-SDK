@@ -1,0 +1,34 @@
+In this lab environment, the Vertex AI API and Cloud Run API have been enabled for you. If you were to follow these steps in your own project, you would enable them by navigating to Vertex AI and following the prompt to enable it.
+
+Prepare a Cloud Shell Editor tab
+With your Google Cloud console window selected, open Cloud Shell by pressing the G key and then the S key on your keyboard. Alternatively, you can click the Activate Cloud Shell button (Activate Cloud Shell) in the upper right of the Cloud console.
+
+Click Continue.
+
+When prompted to authorize Cloud Shell, click Authorize.
+
+In the upper right corner of the Cloud Shell Terminal panel, click the Open in new window button Open in new window button.
+
+In the Cloud Shell Terminal, enter the following to open the Cloud Shell Editor to your home directory:
+
+cloudshell workspace ~
+
+Close any additional tutorial or Gemini panels that appear on the right side of the screen to save more of your window for your code editor.
+
+Throughout the rest of this lab, you can work in this window as your IDE with the Cloud Shell Editor and Cloud Shell Terminal.
+
+Download and install the ADK and code samples for this lab
+Install ADK by running the following command in the Cloud Shell Terminal. Note: You will specify the version to ensure that the version of ADK that you install corresponds to the version used in this lab:
+
+# Install ADK and the A2A Python SDK
+cd ~
+export PATH=$PATH:"/home/${USER}/.local/bin"
+python3 -m pip install google-adk==1.8.0 a2a-sdk==0.2.16
+pip install --upgrade google-genai
+# Correcting a typo in this version
+sed -i 's/{a2a_option}"/{a2a_option} "/' ~/.local/lib/python3.12/site-packages/google/adk/cli/cli_deploy.py
+
+Paste the following commands into the Cloud Shell Terminal to copy lab code from a Cloud Storage bucket and unzip it:
+
+gcloud storage cp gs://qwiklabs-gcp-00-a7db50bd61e3-bucket/adk_and_a2a.zip ./adk_and_a2a.zip
+unzip adk_and_a2a.zip

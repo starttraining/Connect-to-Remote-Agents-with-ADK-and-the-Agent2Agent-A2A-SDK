@@ -1,0 +1,72 @@
+For the purposes of this lab, imagine you work for a stadium maintenance company: Cymbal Stadiums. As part of a recent project, you developed an image generation-agent that can create illustrations according to your brand guidelines. Now, several different teams in your organization want to use it too.
+
+If you were to copy the code for use as a sub-agent by many agents, it would be very difficult to maintain and improve all of these copies.
+
+Instead, you can deploy the agent once as an agent wrapped with an A2A server, and the other teams' agents can incorporate it by querying it remotely.
+
+In the Cloud Shell Editor's file explorer pane, navigate to the adk_and_a2a/illustration_agent directory. This directory contains the ADK agent you will make available remotely. Click the directory to toggle it open.
+
+Open the agent.py file on this directory and scroll to the section labeled # Tools.
+
+Notice the generate_image() function, which will be used as a tool by this agent. It receives a prompt and performs a two-step process. First, it uses the Google Gen AI SDK to call generate_content(), which returns the raw image data directly in the response. Second, the function uses the Cloud Storage library to upload these image bytes to a GCS bucket. Finally, the tool returns the public URL of the newly created image file.
+
+Notice that the instruction provided to the root_agent provides specific instructions to the agent to use image-generation prompts that respect the company's brand guidelines. For example, it specifies:
+
+a specific illustration style: (Corporate Memphis)
+a color palette (purples and greens on sunset gradients)
+examples of stadium/sports and maintenance imagery because it is a stadium maintenance company
+To see it in action, you'll first need to write a .env file to set environment variables needed by ADK agents. Run the following in the Cloud Shell Terminal to write this file in this directory.
+
+cd ~/adk_and_a2a
+cat << EOF > illustration_agent/.env
+GOOGLE_GENAI_USE_VERTEXAI=TRUE
+GOOGLE_CLOUD_PROJECT=qwiklabs-gcp-00-a7db50bd61e3
+GOOGLE_CLOUD_LOCATION=global
+MODEL=gemini-2.5-flash
+IMAGE_MODEL=gemini-2.5-flash-image
+EOF
+
+Run the following to copy the .env to another agent directory you'll use in this lab:
+
+
+Now from the Cloud Shell Terminal, launch the ADK dev UI with:
+
+adk web
+
+Output
+
+INFO:     Started server process [2434]
+INFO:     Waiting for application startup.
++-------------------------------------------------------+
+| ADK Web Server started                                |
+|                                                       |
+| For local testing, access at http://localhost:8000.   |
++-------------------------------------------------------+
+
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+To view the web interface in a new tab, click the http://127.0.0.1:8000 link at the bottom of the Terminal output.
+
+A new browser tab will open with the ADK Dev UI.
+
+From the Select an agent dropdown on the left, select the illustration_agent from the dropdown.
+
+Query the agent with some text that could be used in a recruitment slide deck:
+
+By supporting each other, we get big things done!
+
+After about 10 seconds, the agent should respond with the prompt it generated and a URL to preview the image. Click the image URL to preview the image, then click Back in your browser to return to the Dev UI.
+
+Example Output
+
+Example response from the model
+
+Example Image
+
+Generated image
+
+Notice that the prompt you provided to the agent didn't mention sports, stadiums, or maintenance work, but the agent took your text and the brand guidelines and combined them into a single prompt for the image generation model.
+
+When you are finished exploring the base agent, close the browser tab.
+
+Click on the Cloud Shell Terminal pane and press CTRL + C to stop the server.

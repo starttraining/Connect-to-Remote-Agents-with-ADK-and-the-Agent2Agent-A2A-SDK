@@ -1,0 +1,45 @@
+In this task, you will provide a second ADK agent the ability to identify your illustration agent's capabilities and call it remotely. This second agent will be an agent tasked with creating contents for slides. It will write a headline and a couple of sentences of body text, then transfer to the illustration agent to generate an image to illustrate that text.
+
+In the Cloud Shell Terminal, run the following command to copy the Agent Card JSON file to your adk_and_a2a directory and change its name to indicate that it represents the illustration_agent.
+
+cp illustration_agent/agent.json illustration-agent-card.json
+
+In the Cloud Shell Editor's file explorer pane, navigate to the adk_and_a2a/slide_content_agent and open the agent.py file.
+
+Review this agent's instruction to see it will take a user's suggestion for a slide and write a headline & body text, then transfer to your A2A agent to illustrate the slide.
+
+Paste the following code under the # Agents header to add the remote agent using the RemoteA2aAgent class from ADK:
+
+illustration_agent = RemoteA2aAgent(
+    name="illustration_agent",
+    description="Agent that generates illustrations.",
+    agent_card=(
+        "illustration-agent-card.json"
+    ),
+)
+
+Add the illustration_agent as a sub-agent of the root_agent by adding the following parameter to the root_agent:
+
+sub_agents=[illustration_agent]
+
+Save the file.
+
+Launch the UI from the Cloud Shell Terminal with:
+
+cd ~/adk_and_a2a
+adk web
+
+Once again, click the http://127.0.0.1:8000 link in the Terminal output.
+
+A new browser tab will open with the ADK Dev UI. From the Select an agent dropdown on the left, select the slide_content_agent from the dropdown.
+
+Query the agent with an idea for a slide:
+
+Create content for a slide about our excellent on-the-job training.
+
+You should see the following output:
+
+A headline and body text written by the slide_content_agent itself
+A call to transfer_to_agent, indicating a transfer to the illustration_agent
+The response from the illustration_agent with a link you can click on to see the new image.
+The agent generates text, then transfers to the illustration_agent to generate an image.

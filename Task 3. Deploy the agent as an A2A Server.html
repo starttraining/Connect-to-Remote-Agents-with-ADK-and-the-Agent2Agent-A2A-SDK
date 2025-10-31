@@ -1,0 +1,70 @@
+You'll now take the steps to deploy this agent as a remote A2A agent.
+
+An A2A Agent identifies itself and its capabilities by serving an Agent Card. Run the following to create an agent.json file.
+
+touch illustration_agent/agent.json
+
+Open the agent.json file within the adk_and_a2a/illustration_agent directory and paste in the following contents:
+
+{
+    "name": "illustration_agent",
+    "description": "An agent designed to generate branded illustrations for Cymbal Stadiums.",
+    "defaultInputModes": ["text/plain"],
+    "defaultOutputModes": ["application/json"],
+    "skills": [
+    {
+        "id": "illustrate_text",
+        "name": "Illustrate Text",
+        "description": "Generate an illustration to illustrate the meaning of provided text.",
+        "tags": ["illustration", "image generation"]
+    }
+    ],
+    "url": "https://illustration-agent-236181877150.us-west1.run.app/a2a/illustration_agent",
+    "capabilities": {},
+    "version": "1.0.0"
+}
+
+Save the file.
+
+Review the JSON in the agent.json file. Notice that it gives the agent a name and description and identifies some skills . It also indicates a url where the agent itself can be called.
+
+The agent's url is constructed to be its Cloud Run service URL once you have deployed it following the instructions in this lab.
+
+While similar in name to skills, the parameter capabilities here is reserved to indicate abilities like streaming.
+
+Run the following to create a requirements.txt file in the illustration_agent directory.
+
+touch illustration_agent/requirements.txt
+
+Select the file, and paste the following into the file.
+
+google-adk==1.8.0
+a2a-sdk==0.2.16
+
+Save the file.
+
+In the following command, you will use adk deploy cloud_run with the --a2a flag to deploy your agent to Cloud Run as an A2A server. You can learn more about deploying agents to Cloud Run by searching for the lab "Deploy ADK agents to Cloud Run". In this command:
+
+the --project and --region define the project and region in which your Cloud Run service will be deployed
+the --service_name defines the name for the Cloud Run service
+the --a2a flag indicates it should be hosted as an A2A agent. This means two things:
+your agent will be wrapped by a class which bridges ADK and A2A agents: the A2aAgentExecutor. This class translates A2A Protocol's language of tasks and messages to an ADK Runner in its language of events.
+the Agent Card will be hosted as well at CLOUD_RUN_URL/a2a/AGENT_NAME/.well-known/agent.json. Note: While this version of the card will be usable soon, the dynamic rewriting of the agent's url currently does not work with Cloud Run, so we won't use it in this version of this lab.
+Deploy the agent to Cloud Run as an A2A server with the following command:
+
+adk deploy cloud_run \
+    --project qwiklabs-gcp-00-a7db50bd61e3 \
+    --region us-west1 \
+    --service_name illustration-agent \
+    --a2a \
+    illustration_agent
+
+You will be prompted to allow unauthenticated responses for this container. For the sake of lab testing, enter Y into the Cloud Shell Terminal (for "yes") and press return.
+
+Note: Deployment should take about 5-10 minutes. If you encounter a PERMISSION_DENIED error, try running the above command again.
+Expected output:
+
+You will see steps relating to building a Dockerfile and deploying the container, then deploying the service, followed by:
+
+Service [illustration-agent] revision [illustration-agent-00001-xpp] has been deployed and is serving 100 percent of traffic.
+Service URL: https://illustration-agent-236181877150.us-west1.run.app
